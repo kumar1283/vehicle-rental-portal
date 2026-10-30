@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
-import { getVehicles, addVehicleApi, updateVehicleApi, deleteVehicleApi } from "../api/VehicleApi.jsx";
+import {
+  getVehicles,
+  addVehicleApi,
+  updateVehicleApi,
+  deleteVehicleApi,
+} from "../api/VehicleApi.jsx";
 import { getCustomers, addCustomerApi } from "../api/CustomerApi.jsx";
-import { getRentals, addRentalApi, hasActiveRental } from "../api/RentalApi.jsx";
+import {
+  getRentals,
+  addRentalApi,
+  hasActiveRental,
+} from "../api/RentalApi.jsx";
 import VehicleCard from "../components/VehicleCard.jsx";
 import VehicleForm from "../components/VehicleForm.jsx";
 import RentVehicleForm from "../components/RentVehicleForm.jsx";
@@ -28,7 +37,10 @@ function VehicleList() {
       setVehicles(await getVehicles());
       setRentals(await getRentals());
     } catch (err) {
-      showMessage("Could not load data. Is JSON Server running on port 3000?", "error");
+      showMessage(
+        "Could not load data. Is JSON Server running on port 3000?",
+        "error",
+      );
     }
   }
 
@@ -40,7 +52,10 @@ function VehicleList() {
   // ---------- Add / Edit ----------
   function openAddForm() {
     if (vehicles.length >= MAX_VEHICLES) {
-      showMessage("Vehicle limit reached. You can only keep 10 vehicles.", "error");
+      showMessage(
+        "Vehicle limit reached. You can only keep 10 vehicles.",
+        "error",
+      );
       return;
     }
     setMessage("");
@@ -62,7 +77,10 @@ function VehicleList() {
   async function saveVehicle(vehicleData) {
     try {
       if (vehicleToEdit) {
-        await updateVehicleApi(vehicleToEdit.id, { ...vehicleData, id: vehicleToEdit.id });
+        await updateVehicleApi(vehicleToEdit.id, {
+          ...vehicleData,
+          id: vehicleToEdit.id,
+        });
         showMessage("Vehicle updated successfully.", "success");
       } else {
         await addVehicleApi(vehicleData);
@@ -78,7 +96,10 @@ function VehicleList() {
   // ---------- Delete ----------
   async function deleteVehicle(vehicle) {
     if (hasActiveRental(vehicle.id, rentals)) {
-      showMessage("This vehicle has an active rental and cannot be deleted.", "error");
+      showMessage(
+        "This vehicle has an active rental and cannot be deleted.",
+        "error",
+      );
       return;
     }
     const sure = window.confirm(`Delete ${vehicle.name}?`);
@@ -150,14 +171,16 @@ function VehicleList() {
   const filteredVehicles = vehicles.filter(
     (vehicle) =>
       vehicle.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      vehicle.type.toLowerCase().includes(searchText.toLowerCase())
+      vehicle.type.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   return (
     <div>
       <div className="page-header">
-        <h2>Vehicles ({vehicles.length}/{MAX_VEHICLES})</h2>
-        <button className="btn btn-primary" onClick={openAddForm}>Add New Vehicle</button>
+        <h2>Vehicles</h2>
+        <button className="btn btn-primary" onClick={openAddForm}>
+          Add New Vehicle
+        </button>
       </div>
 
       {message && <p className={`message ${messageType}`}>{message}</p>}
