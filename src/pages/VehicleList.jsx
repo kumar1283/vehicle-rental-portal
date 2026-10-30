@@ -221,31 +221,33 @@ function VehicleList() {
       )}
 
       <section id="vehicle-list">
-        <div className="vehicle-filters" aria-label="Filter vehicles">
-          {[
-            ["all", "All vehicles"],
-            ["available", "Available"],
-            ["rented", "Rented"],
-          ].map(([status, label]) => (
-            <button
-              key={status}
-              type="button"
-              className={`vehicle-filter${vehicleStatus === status ? " active" : ""}`}
-              aria-pressed={vehicleStatus === status}
-              onClick={() => selectVehicleStatus(status)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <div className="list-toolbar">
+          <div className="vehicle-filters" aria-label="Filter vehicles">
+            {[
+              ["all", "All vehicles"],
+              ["available", "Available"],
+              ["rented", "Rented"],
+            ].map(([status, label]) => (
+              <button
+                key={status}
+                type="button"
+                className={`vehicle-filter${vehicleStatus === status ? " active" : ""}`}
+                aria-pressed={vehicleStatus === status}
+                onClick={() => selectVehicleStatus(status)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-        <input
-          type="text"
-          className="search-box"
-          placeholder="Search by name or type..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
+          <input
+            type="text"
+            className="search-box"
+            placeholder="Search by name or type..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </div>
 
         {filteredVehicles.length === 0 ? (
           <p className="empty-text">No vehicles found.</p>

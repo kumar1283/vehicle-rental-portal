@@ -81,31 +81,33 @@ function RentalList() {
 
       {message && <p className={`message ${messageType}`}>{message}</p>}
 
-      <div className="vehicle-filters" aria-label="Filter rentals">
-        {[
-          ["all", "All rentals"],
-          ["active", "Active"],
-          ["returned", "Returned"],
-        ].map(([status, label]) => (
-          <button
-            key={status}
-            type="button"
-            className={`vehicle-filter${rentalStatus === status ? " active" : ""}`}
-            aria-pressed={rentalStatus === status}
-            onClick={() => selectRentalStatus(status)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <div className="list-toolbar">
+        <div className="vehicle-filters" aria-label="Filter rentals">
+          {[
+            ["all", "All rentals"],
+            ["active", "Active"],
+            ["returned", "Returned"],
+          ].map(([status, label]) => (
+            <button
+              key={status}
+              type="button"
+              className={`vehicle-filter${rentalStatus === status ? " active" : ""}`}
+              aria-pressed={rentalStatus === status}
+              onClick={() => selectRentalStatus(status)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
-      <input
-        type="text"
-        className="search-box"
-        placeholder="Search by customer, mobile, vehicle or status..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
+        <input
+          type="text"
+          className="search-box"
+          placeholder="Search by customer, mobile, vehicle or status..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </div>
 
       <RentalTable rentals={filteredRentals} onMarkReturned={markReturned} />
     </div>
