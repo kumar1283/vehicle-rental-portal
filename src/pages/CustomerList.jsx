@@ -20,22 +20,28 @@ function CustomerList() {
     loadData();
   }, []);
 
-  // For each customer we show their LATEST rental (the one with the highest id)
+  // IDs are strings, so use the rental date rather than ID ordering to find the latest rental.
   function getLatestRental(customerId) {
-    const customerRentals = rentals.filter((rental) => Number(rental.customerId) === Number(customerId));
+    const customerRentals = rentals.filter(
+      (rental) => String(rental.customerId) === String(customerId)
+    );
     if (customerRentals.length === 0) {
       return null;
     }
-    return customerRentals.reduce((latest, rental) => (rental.id > latest.id ? rental : latest));
+    return customerRentals.reduce((latest, rental) =>
+      rental.startDate > latest.startDate ? rental : latest
+    );
   }
 
   const filteredCustomers = customers.filter((customer) => {
     const rental = getLatestRental(customer.id);
     const vehicleName = rental ? rental.vehicleName : "";
     const text = searchText.toLowerCase();
+    const customerName = customer.name || "";
+    const mobile = customer.mobile || customer.phone || "";
     return (
-      customer.name.toLowerCase().includes(text) ||
-      customer.mobile.includes(text) ||
+      customerName.toLowerCase().includes(text) ||
+      String(mobile).includes(text) ||
       vehicleName.toLowerCase().includes(text)
     );
   });
@@ -78,8 +84,8 @@ function CustomerList() {
                 const rental = getLatestRental(customer.id);
                 return (
                   <tr key={customer.id}>
-                    <td>{customer.name}</td>
-                    <td>{customer.mobile}</td>
+                    <td>{customer.name || "-"}</td>
+                    <td>{customer.mobile || customer.phone || "-"}</td>
                     <td>{rental ? rental.vehicleName : "No rental yet"}</td>
                     <td>{rental ? rental.startDate : "-"}</td>
                     <td>{rental ? rental.endDate : "-"}</td>
