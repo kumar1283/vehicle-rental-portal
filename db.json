@@ -1,0 +1,50 @@
+{
+  "vehicles": [
+    {
+      "id": "1",
+      "name": "Toyota Corolla",
+      "type": "Car",
+      "pricePerDay": 2500,
+      "image": ""
+    },
+    {
+      "id": "2",
+      "name": "Honda CB Shine",
+      "type": "Bike",
+      "pricePerDay": 600,
+      "image": ""
+    },
+    {
+      "id": "3",
+      "name": "Ola S1 Pro",
+      "type": "Scooter",
+      "pricePerDay": 450,
+      "image": ""
+    }
+  ],
+  "customers": [
+    {
+      "name": "kumar",
+      "mobile": "7386499805",
+      "email": "",
+      "id": "AUIoV3chpoQ"
+    }
+  ],
+  "rentals": [
+    {
+      "customerId": "AUIoV3chpoQ",
+      "customerName": "kumar",
+      "customerMobile": "7386499805",
+      "vehicleId": "1",
+      "vehicleName": "Toyota Corolla",
+      "startDate": "2026-10-29",
+      "endDate": "2026-10-29",
+      "days": 1,
+      "pricePerDay": 2500,
+      "totalCharges": 2500,
+      "status": "Returned",
+      "id": "XAqaPUu0rog"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
