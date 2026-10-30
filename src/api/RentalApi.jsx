@@ -45,6 +45,6 @@ export async function updateRentalApi(id, rental) {
 // a vehicle is rented when it has a rental with status "Active".
 export function hasActiveRental(vehicleId, rentals) {
   return rentals.some(
-    (rental) => Number(rental.vehicleId) === Number(vehicleId) && rental.status === "Active"
+    (rental) => String(rental.vehicleId) === String(vehicleId) && rental.status === "Active"
   );
 }

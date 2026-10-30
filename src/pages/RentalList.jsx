@@ -1,16 +1,29 @@
 import { useState, useEffect } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { getRentals, updateRentalApi } from "../api/RentalApi.jsx";
 import RentalTable from "../components/RentalTable.jsx";
 
 function RentalList() {
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [rentals, setRentals] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
+  const requestedStatus = searchParams.get("status");
+  const rentalStatus = ["active", "returned"].includes(requestedStatus)
+    ? requestedStatus
+    : "all";
 
   useEffect(() => {
     loadRentals();
   }, []);
+
+  useEffect(() => {
+    if (location.hash === "#rental-list") {
+      document.getElementById("rental-list")?.scrollIntoView({ block: "start" });
+    }
+  }, [location.hash]);
 
   async function loadRentals() {
     try {
@@ -40,22 +53,51 @@ function RentalList() {
   const filteredRentals = rentals
     .filter((rental) => {
       const text = searchText.toLowerCase();
-      return (
+      const matchesSearch =
         rental.customerName.toLowerCase().includes(text) ||
         rental.customerMobile.includes(text) ||
         rental.vehicleName.toLowerCase().includes(text) ||
-        rental.status.toLowerCase().includes(text)
-      );
+        rental.status.toLowerCase().includes(text);
+      return matchesSearch &&
+        (rentalStatus === "all" || rental.status.toLowerCase() === rentalStatus);
     })
     .sort((a, b) => b.id - a.id);
 
+  function selectRentalStatus(status) {
+    const nextParams = new URLSearchParams(searchParams);
+    if (status === "all") {
+      nextParams.delete("status");
+    } else {
+      nextParams.set("status", status);
+    }
+    setSearchParams(nextParams);
+  }
+
   return (
-    <div>
+    <div id="rental-list">
       <div className="page-header">
         <h2>Rentals</h2>
       </div>
 
       {message && <p className={`message ${messageType}`}>{message}</p>}
+
+      <div className="vehicle-filters" aria-label="Filter rentals">
+        {[
+          ["all", "All rentals"],
+          ["active", "Active"],
+          ["returned", "Returned"],
+        ].map(([status, label]) => (
+          <button
+            key={status}
+            type="button"
+            className={`vehicle-filter${rentalStatus === status ? " active" : ""}`}
+            aria-pressed={rentalStatus === status}
+            onClick={() => selectRentalStatus(status)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
       <input
         type="text"

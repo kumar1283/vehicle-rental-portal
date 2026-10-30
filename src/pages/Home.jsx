@@ -42,10 +42,18 @@ function Home() {
       {error && <p className="message error">{error}</p>}
 
       <div className="summary-grid">
-        <div className="summary-card"><h3>{vehicles.length}</h3><p>Total vehicles</p></div>
-        <div className="summary-card"><h3>{availableCount}</h3><p>Available vehicles</p></div>
-        <div className="summary-card"><h3>{customers.length}</h3><p>Total customers</p></div>
-        <div className="summary-card"><h3>{activeRentals}</h3><p>Active rentals</p></div>
+        <Link to="/vehicles?status=all#vehicle-list" className="summary-card summary-card-link">
+          <h3>{vehicles.length}</h3><p>Total vehicles</p>
+        </Link>
+        <Link to="/vehicles?status=available#vehicle-list" className="summary-card summary-card-link">
+          <h3>{availableCount}</h3><p>Available vehicles</p>
+        </Link>
+        <Link to="/customers#customer-list" className="summary-card summary-card-link">
+          <h3>{customers.length}</h3><p>Total customers</p>
+        </Link>
+        <Link to="/rentals?status=active#rental-list" className="summary-card summary-card-link">
+          <h3>{activeRentals}</h3><p>Active rentals</p>
+        </Link>
         <div className="summary-card"><h3>₹{totalCharges}</h3><p>Total rental charges</p></div>
       </div>
 

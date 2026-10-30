@@ -88,6 +88,12 @@
       "mobile": "9440128497",
       "email": "",
       "id": "dspf4eVgobg"
+    },
+    {
+      "name": "lucky",
+      "mobile": "9845268755",
+      "email": "",
+      "id": "bTBUy5V"
     }
   ],
   "rentals": [
@@ -130,8 +136,36 @@
       "days": 1,
       "pricePerDay": 450,
       "totalCharges": 450,
-      "status": "Active",
+      "status": "Returned",
       "id": "1u9ho8InLlk"
+    },
+    {
+      "customerId": "MTi-gVPjOE4",
+      "customerName": "chetan",
+      "customerMobile": "9440219483",
+      "vehicleId": "jrO8kqA",
+      "vehicleName": "ACTIVA 4G",
+      "startDate": "2026-10-30",
+      "endDate": "2026-10-31",
+      "days": 2,
+      "pricePerDay": 499,
+      "totalCharges": 998,
+      "status": "Active",
+      "id": "wGoRd7E"
+    },
+    {
+      "customerId": "bTBUy5V",
+      "customerName": "lucky",
+      "customerMobile": "9845268755",
+      "vehicleId": "jrO8kqA",
+      "vehicleName": "ACTIVA 4G",
+      "startDate": "2026-10-30",
+      "endDate": "2026-10-31",
+      "days": 2,
+      "pricePerDay": 499,
+      "totalCharges": 998,
+      "status": "Active",
+      "id": "Xkf3aam"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -55,49 +55,51 @@ function CustomerList() {
 
       {error && <p className="message error">{error}</p>}
 
-      <input
-        type="text"
-        className="search-box"
-        placeholder="Search by name, mobile or vehicle..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
+      <section id="customer-list">
+        <input
+          type="text"
+          className="search-box"
+          placeholder="Search by name, mobile or vehicle..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
 
-      {filteredCustomers.length === 0 ? (
-        <p className="empty-text">No customers found.</p>
-      ) : (
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Mobile</th>
-                <th>Vehicle rented</th>
-                <th>Start date</th>
-                <th>End date</th>
-                <th>Charges</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCustomers.map((customer) => {
-                const rental = getLatestRental(customer.id);
-                return (
-                  <tr key={customer.id}>
-                    <td>{customer.name || "-"}</td>
-                    <td>{customer.mobile || customer.phone || "-"}</td>
-                    <td>{rental ? rental.vehicleName : "No rental yet"}</td>
-                    <td>{rental ? rental.startDate : "-"}</td>
-                    <td>{rental ? rental.endDate : "-"}</td>
-                    <td>{rental ? `₹${rental.totalCharges}` : "-"}</td>
-                    <td>{rental ? rental.status : "-"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+        {filteredCustomers.length === 0 ? (
+          <p className="empty-text">No customers found.</p>
+        ) : (
+          <div className="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Mobile</th>
+                  <th>Vehicle rented</th>
+                  <th>Start date</th>
+                  <th>End date</th>
+                  <th>Charges</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCustomers.map((customer) => {
+                  const rental = getLatestRental(customer.id);
+                  return (
+                    <tr key={customer.id}>
+                      <td>{customer.name || "-"}</td>
+                      <td>{customer.mobile || customer.phone || "-"}</td>
+                      <td>{rental ? rental.vehicleName : "No rental yet"}</td>
+                      <td>{rental ? rental.startDate : "-"}</td>
+                      <td>{rental ? rental.endDate : "-"}</td>
+                      <td>{rental ? `₹${rental.totalCharges}` : "-"}</td>
+                      <td>{rental ? rental.status : "-"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

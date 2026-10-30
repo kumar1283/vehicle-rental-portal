@@ -14,9 +14,11 @@ function VehicleCard({ vehicle, isAvailable, onRent, onEdit, onDelete }) {
         </span>
       </div>
       <div className="card-buttons">
-        <button className="btn btn-primary" onClick={() => onRent(vehicle)} disabled={!isAvailable}>
-          Rent
-        </button>
+        {isAvailable && (
+          <button className="btn btn-primary" onClick={() => onRent(vehicle)}>
+            Rent
+          </button>
+        )}
         <button className="btn btn-secondary" onClick={() => onEdit(vehicle)}>
           Edit
         </button>

@@ -11,6 +11,7 @@ import {
   addRentalApi,
   hasActiveRental,
 } from "../api/RentalApi.jsx";
+import { useLocation, useSearchParams } from "react-router-dom";
 import VehicleCard from "../components/VehicleCard.jsx";
 import VehicleForm from "../components/VehicleForm.jsx";
 import RentVehicleForm from "../components/RentVehicleForm.jsx";
@@ -18,6 +19,8 @@ import RentVehicleForm from "../components/RentVehicleForm.jsx";
 const MAX_VEHICLES = 10;
 
 function VehicleList() {
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [vehicles, setVehicles] = useState([]);
   const [rentals, setRentals] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -27,10 +30,20 @@ function VehicleList() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
   const [rentError, setRentError] = useState("");
+  const requestedStatus = searchParams.get("status");
+  const vehicleStatus = ["available", "rented"].includes(requestedStatus)
+    ? requestedStatus
+    : "all";
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (location.hash === "#vehicle-list") {
+      document.getElementById("vehicle-list")?.scrollIntoView({ block: "start" });
+    }
+  }, [location.hash]);
 
   async function loadData() {
     try {
@@ -168,11 +181,24 @@ function VehicleList() {
   }
 
   // ---------- Search ----------
-  const filteredVehicles = vehicles.filter(
-    (vehicle) =>
-      vehicle.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      vehicle.type.toLowerCase().includes(searchText.toLowerCase()),
-  );
+  const filteredVehicles = vehicles
+    .filter((vehicle) => {
+      const matchesSearch =
+        vehicle.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        vehicle.type.toLowerCase().includes(searchText.toLowerCase());
+      const isAvailable = !hasActiveRental(vehicle.id, rentals);
+      const matchesStatus =
+        vehicleStatus === "all" ||
+        (vehicleStatus === "available" && isAvailable) ||
+        (vehicleStatus === "rented" && !isAvailable);
+      return matchesSearch && matchesStatus;
+    });
+
+  function selectVehicleStatus(status) {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set("status", status);
+    setSearchParams(nextParams);
+  }
 
   return (
     <div>
@@ -194,30 +220,50 @@ function VehicleList() {
         />
       )}
 
-      <input
-        type="text"
-        className="search-box"
-        placeholder="Search by name or type..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
-
-      {filteredVehicles.length === 0 ? (
-        <p className="empty-text">No vehicles found.</p>
-      ) : (
-        <div className="vehicle-grid">
-          {filteredVehicles.map((vehicle) => (
-            <VehicleCard
-              key={vehicle.id}
-              vehicle={vehicle}
-              isAvailable={!hasActiveRental(vehicle.id, rentals)}
-              onRent={openRentForm}
-              onEdit={openEditForm}
-              onDelete={deleteVehicle}
-            />
+      <section id="vehicle-list">
+        <div className="vehicle-filters" aria-label="Filter vehicles">
+          {[
+            ["all", "All vehicles"],
+            ["available", "Available"],
+            ["rented", "Rented"],
+          ].map(([status, label]) => (
+            <button
+              key={status}
+              type="button"
+              className={`vehicle-filter${vehicleStatus === status ? " active" : ""}`}
+              aria-pressed={vehicleStatus === status}
+              onClick={() => selectVehicleStatus(status)}
+            >
+              {label}
+            </button>
           ))}
         </div>
-      )}
+
+        <input
+          type="text"
+          className="search-box"
+          placeholder="Search by name or type..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+
+        {filteredVehicles.length === 0 ? (
+          <p className="empty-text">No vehicles found.</p>
+        ) : (
+          <div className="vehicle-grid">
+            {filteredVehicles.map((vehicle) => (
+              <VehicleCard
+                key={vehicle.id}
+                vehicle={vehicle}
+                isAvailable={!hasActiveRental(vehicle.id, rentals)}
+                onRent={openRentForm}
+                onEdit={openEditForm}
+                onDelete={deleteVehicle}
+              />
+            ))}
+          </div>
+        )}
+      </section>
 
       {vehicleToRent && (
         <RentVehicleForm
