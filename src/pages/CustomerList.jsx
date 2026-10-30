@@ -26,29 +26,43 @@ function CustomerList() {
     loadData();
   }, []);
 
-  // IDs are strings, so use the rental date rather than ID ordering to find the latest rental.
-  function getLatestRental(customerId) {
-    const customerRentals = rentals.filter(
-      (rental) => String(rental.customerId) === String(customerId)
+  function isRentalForCustomer(rental, customer) {
+    const customerMobile = String(customer.mobile || customer.phone || "").trim();
+    const rentalMobile = String(rental.customerMobile || "").trim();
+    if (customerMobile && rentalMobile) {
+      return customerMobile === rentalMobile;
+    }
+
+    return (
+      rental.customerId != null &&
+      customer.id != null &&
+      String(rental.customerId) === String(customer.id)
+    );
+  }
+
+  // Rental lists are oldest-first, so the later entry wins when booking dates are equal.
+  function getLatestRental(customer) {
+    const customerRentals = rentals.filter((rental) =>
+      isRentalForCustomer(rental, customer)
     );
     if (customerRentals.length === 0) {
       return null;
     }
     return customerRentals.reduce((latest, rental) =>
-      rental.startDate > latest.startDate ? rental : latest
+      (rental.startDate || "") >= (latest.startDate || "") ? rental : latest
     );
   }
 
   const customerRows = customerStatus === "all"
     ? customers.map((customer) => ({
         customer,
-        rental: getLatestRental(customer.id),
+        rental: getLatestRental(customer),
       }))
     : rentals
         .filter((rental) => rental.status.toLowerCase() === customerStatus)
         .map((rental) => ({
           customer: customers.find(
-            (customer) => String(customer.id) === String(rental.customerId)
+            (customer) => isRentalForCustomer(rental, customer)
           ),
           rental,
         }));

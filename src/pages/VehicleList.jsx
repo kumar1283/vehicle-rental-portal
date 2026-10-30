@@ -157,7 +157,7 @@ function VehicleList() {
       }
 
       // 3. Create the rental record
-      await addRentalApi({
+      const savedRental = await addRentalApi({
         customerId: customer.id,
         customerName: customer.name,
         customerMobile: customer.mobile,
@@ -171,10 +171,35 @@ function VehicleList() {
         status: "Active",
       });
 
-      // 4. Close the form, refresh and show success
+      // Update the UI from the saved record immediately so customer and vehicle status stay in sync.
+      setRentals((currentRentals) => [
+        ...currentRentals.filter(
+          (rental) => String(rental.id) !== String(savedRental.id)
+        ),
+        savedRental,
+      ]);
       setVehicleToRent(null);
-      await loadData();
       showMessage("Rental confirmed successfully.", "success");
+
+      try {
+        const [updatedVehicles, updatedRentals] = await Promise.all([
+          getVehicles(),
+          getRentals(),
+        ]);
+        const rentalWasPersisted = updatedRentals.some(
+          (rental) => String(rental.id) === String(savedRental.id)
+        );
+        if (!rentalWasPersisted) {
+          throw new Error("The rental could not be found after saving.");
+        }
+        setVehicles(updatedVehicles);
+        setRentals(updatedRentals);
+      } catch (refreshError) {
+        showMessage(
+          `Rental saved, but the latest data could not be refreshed: ${refreshError.message}`,
+          "error",
+        );
+      }
     } catch (err) {
       setRentError(err.message);
     }
